@@ -1,0 +1,11 @@
+H:\Git\springboot-security-test\src\main\java\com\test\controller\UserController.java
+H:\Git\springboot-security-test\src\main\java\com\test\service\impl\MyUserDetailsService.java
+H:\Git\springboot-security-test\src\main\java\com\test\config\SecurityConfig.java
+H:\Git\springboot-security-test\src\main\java\com\test\domain\dto\Users.java
+H:\Git\springboot-security-test\src\main\java\com\test\Application.java
+H:\Git\springboot-security-test\src\main\java\com\test\config\DruidConfig.java
+H:\Git\springboot-security-test\src\main\java\com\test\mapper\UserMapper.java
+H:\Git\springboot-security-test\src\main\java\com\test\controller\LoginController.java
+H:\Git\springboot-security-test\src\main\java\com\test\handler\MyAuthenticationSuccessHandler.java
+H:\Git\springboot-security-test\src\main\java\com\test\domain\entity\User.java
+H:\Git\springboot-security-test\src\main\java\com\test\domain\entity\Authority.java

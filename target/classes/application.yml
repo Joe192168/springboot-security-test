@@ -1,0 +1,44 @@
+#数据源配置
+spring:
+  datasource:
+    username: gpadmin
+    password: gpadmin123
+    url: jdbc:postgresql://192.168.0.233:5432/dev
+    driver-class-name: org.postgresql.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+  thymeleaf:
+    cache: false
+  #自动部署脚本
+  flyway:
+    #配置脚本本地路径
+    locations:
+      classpath:db/init,
+      classpath:db/update
+    #是否启动flyway
+    enabled: true
+    #配置已经执行过的文件不在执行
+    baseline-on-migrate: true
+    #配置flyway是否执行
+    clean-disabled: true
+    #读取架构历史记录表时是否忽略丢失的迁移
+    ignore-missing-migrations: true
+
+# MyBatis配置
+mybatis:
+  # 搜索指定包别名
+  typeAliasesPackage: com.test.**.domain
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapperLocations: classpath*:mapper/**/*Mapper.xml
+  configuration:
+    # 指定 MyBatis 所用日志的具体实现
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+    # 开启自动下划线格式转驼峰格式
+    map-underscore-to-camel-case: true
+    # 全局映射器启用缓存
+    cache-enabled: true
+    # 允许 JDBC 支持自动生成主键
+    use-generated-keys: true
+    # 执行模式。默认是 SIMPLE
+    default-executor-type: reuse
+    # 允许查询结果为null
+    call-setters-on-nulls: true

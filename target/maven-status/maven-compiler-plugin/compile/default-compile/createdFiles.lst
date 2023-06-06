@@ -1,0 +1,11 @@
+com\test\handler\MyAuthenticationSuccessHandler.class
+com\test\Application.class
+com\test\domain\dto\Users.class
+com\test\config\DruidConfig.class
+com\test\domain\entity\User.class
+com\test\domain\entity\Authority.class
+com\test\controller\LoginController.class
+com\test\config\SecurityConfig.class
+com\test\mapper\UserMapper.class
+com\test\service\impl\MyUserDetailsService.class
+com\test\controller\UserController.class
