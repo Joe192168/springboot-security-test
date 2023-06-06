@@ -7,6 +7,7 @@
     import org.springframework.security.core.authority.SimpleGrantedAuthority;
     import org.springframework.security.core.userdetails.UserDetails;
 
+    import javax.jws.soap.SOAPBinding;
     import java.util.ArrayList;
     import java.util.Collection;
     import java.util.List;
@@ -18,14 +19,12 @@
      * @Description: TODO
      */
     @Data
-    public class LoginUser extends User implements UserDetails {
+    public class LoginUser implements UserDetails {
 
-        private List<Authority> authorityList;
+        private User user;
 
-        public LoginUser(User user,List<Authority> authorityList) {
-            this.setUsername(user.getUsername());
-            this.setPassword(user.getPassword());
-            this.setAuthorityList(authorityList);
+        public LoginUser(User user) {
+            this.user = user;
         }
 
         /**
@@ -35,11 +34,21 @@
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
             List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-            for (Authority authority : authorityList) {
+            for (Authority authority : user.getAuthorityList()) {
                 // 角色必须以`ROLE_`开头，数据库中没有，则在这里加
                 authorities.add(new SimpleGrantedAuthority("ROLE_"+authority.getAuthority()));
             }
             return authorities;
+        }
+
+        @Override
+        public String getPassword() {
+            return user.getPassword();
+        }
+
+        @Override
+        public String getUsername() {
+            return user.getUsername();
         }
 
         /**

@@ -1,5 +1,6 @@
 package com.test.config;
 
+import com.test.filter.JwtAuthenticationTokenFilter;
 import com.test.handler.FailHandler;
 import com.test.handler.MyAccessDenied;
 import com.test.handler.SuccessHandler;
@@ -7,16 +8,19 @@ import com.test.service.impl.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true) // 会拦截注解了@PreAuthrize注解的配置
+//@EnableGlobalMethodSecurity(prePostEnabled = true) // 会拦截注解了@PreAuthrize注解的配置
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /*@Autowired
@@ -25,6 +29,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private MyUserDetailsService userDetailsService;
     @Autowired
     private  BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
     /**
      * 授权-安全规则
@@ -34,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // authorizeRequests() 方法表示开启权限配置
-        http.authorizeRequests()
+        /*http.authorizeRequests()
                 // 和PreAuthorize是相同的效果
                 .antMatchers("/admin","/user").hasAnyRole("ADMIN")
                 // 表示所有的请求都要认证后才能访问
@@ -63,10 +69,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 // 禁用CSRF防御功能功能，SpringSecurity 自带了 CSRF 防御机制，
                 // 但是我们这里为了测试方便，先将CSRF防御机制关闭
-                .csrf().disable();
+                .csrf().disable();*/
 
         //自定义403权限不足的返回值
-        http.exceptionHandling().accessDeniedHandler(new MyAccessDenied());
+        //http.exceptionHandling().accessDeniedHandler(new MyAccessDenied());
+
+        http
+                //关闭csrf
+                .csrf().disable()
+                //不通过Session获取SecurityContext
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests()
+                // 对于登录接口 允许匿名访问
+                .antMatchers("/user/login").anonymous() //表示匿名可访问
+                // 除上面外的所有请求全部需要鉴权认证
+                .anyRequest().authenticated();
+
+        //认证过滤器
+        http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+
     }
 
     /**
@@ -111,6 +133,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
     }
 
+    @Bean
+    @Override
+    protected AuthenticationManager authenticationManager() throws Exception {
+        return super.authenticationManager();
+    }
+
+    /**
+     * 密码编码器
+     * @return
+     */
     @Bean
     protected BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();

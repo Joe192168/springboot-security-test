@@ -1,12 +1,26 @@
 package com.test.controller;
 
+import com.test.domain.entity.User;
+import com.test.domain.pojo.MsgResult;
+import com.test.service.LoginService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
+@RequestMapping("/user")
 public class LoginController {
 
-    @GetMapping("/tologin")
+    @Autowired
+    private LoginService loginService;
+
+    @PostMapping("/login")
+    public MsgResult login(@RequestBody User user){
+        MsgResult msgResult = loginService.login(user);
+        return msgResult;
+    }
+
+    /*@GetMapping("/tologin")
     public String login(){
         return "login";
     }
@@ -19,6 +33,6 @@ public class LoginController {
     @GetMapping("/toindex")
     public String toindex(){
         return "index";
-    }
+    }*/
 
 }

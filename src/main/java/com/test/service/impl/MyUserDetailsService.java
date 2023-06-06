@@ -27,6 +27,7 @@ public class MyUserDetailsService implements UserDetailsService {
         }
         //根据用户名查询角色权限
         List<Authority> authorityList = userMapper.getRolesByUsername(username);
-        return new LoginUser(user, authorityList);
+        user.setAuthorityList(authorityList);
+        return new LoginUser(user);
     }
 }

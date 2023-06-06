@@ -22,6 +22,11 @@ spring:
     clean-disabled: true
     #读取架构历史记录表时是否忽略丢失的迁移
     ignore-missing-migrations: true
+  # Redis配置
+  redis:
+    host: 192.168.0.219
+    password: jhsz0603
+    port: 6379
 
 # MyBatis配置
 mybatis:
