@@ -1,5 +1,6 @@
 package com.test.filter;
 
+import com.alibaba.fastjson.parser.ParserConfig;
 import com.test.domain.dto.LoginUser;
 import com.test.utils.JwtUtil;
 import com.test.utils.RedisCache;
@@ -41,13 +42,14 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         if (StringUtils.isBlank(token)){
             //说明没有携带token，那么直接放行之后的过滤器肯定会报错，那么就说明用户没有登录
             filterChain.doFilter(request,response);
-            throw new RuntimeException("没有携带token");
+            return;
+            //throw new RuntimeException("没有携带token");
         }
         //解析token
         String userId;
         try {
             Claims claims = JwtUtil.parseJWT(token);
-            userId = claims.getId();
+            userId = claims.getSubject();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("token无效");
@@ -58,7 +60,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             throw new RuntimeException("用户未登录");
         }
         //存入SecurityContextHolder上下文当中  注意 这里必须得使用三个参数的authentication
-        Authentication authentication = new UsernamePasswordAuthenticationToken(loginUser,null,null);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(loginUser,null,loginUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         //放行
         filterChain.doFilter(request,response);

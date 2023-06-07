@@ -1,13 +1,12 @@
     package com.test.domain.dto;
 
-    import com.test.domain.entity.Authority;
     import com.test.domain.entity.User;
     import lombok.Data;
+    import lombok.NoArgsConstructor;
     import org.springframework.security.core.GrantedAuthority;
     import org.springframework.security.core.authority.SimpleGrantedAuthority;
     import org.springframework.security.core.userdetails.UserDetails;
 
-    import javax.jws.soap.SOAPBinding;
     import java.util.ArrayList;
     import java.util.Collection;
     import java.util.List;
@@ -19,12 +18,21 @@
      * @Description: TODO
      */
     @Data
+    @NoArgsConstructor
     public class LoginUser implements UserDetails {
+
+        private static final long serialVersionUID = 1L;
 
         private User user;
 
-        public LoginUser(User user) {
+        //权限集合
+        private List<String> permissions;
+
+        private List<SimpleGrantedAuthority> authorities;
+
+        public LoginUser(User user, List<String> permissions) {
             this.user = user;
+            this.permissions = permissions;
         }
 
         /**
@@ -33,10 +41,10 @@
          */
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
-            List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-            for (Authority authority : user.getAuthorityList()) {
+            List<GrantedAuthority>  authorities = new ArrayList<>();
+            for (String perm : permissions) {
                 // 角色必须以`ROLE_`开头，数据库中没有，则在这里加
-                authorities.add(new SimpleGrantedAuthority("ROLE_"+authority.getAuthority()));
+                authorities.add(new SimpleGrantedAuthority("ROLE_"+perm));
             }
             return authorities;
         }

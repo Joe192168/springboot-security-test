@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MyUserDetailsService implements UserDetailsService {
@@ -27,7 +28,7 @@ public class MyUserDetailsService implements UserDetailsService {
         }
         //根据用户名查询角色权限
         List<Authority> authorityList = userMapper.getRolesByUsername(username);
-        user.setAuthorityList(authorityList);
-        return new LoginUser(user);
+        List<String> collect = authorityList.stream().map(authority -> authority.getAuthority()).collect(Collectors.toList());
+        return new LoginUser(user,collect);
     }
 }

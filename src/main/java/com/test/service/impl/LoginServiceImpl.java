@@ -1,5 +1,6 @@
 package com.test.service.impl;
 
+import com.alibaba.fastjson.parser.ParserConfig;
 import com.test.domain.dto.LoginUser;
 import com.test.domain.entity.User;
 import com.test.domain.pojo.MsgResult;
@@ -51,6 +52,6 @@ public class LoginServiceImpl implements LoginService {
 
         Map<String, String> map = new HashMap<>();
         map.put("token",jwt);
-        return new MsgResult(200,"获取jwt成功",map);
+        return MsgResult.success("获取jwt成功",map);
     }
 }
