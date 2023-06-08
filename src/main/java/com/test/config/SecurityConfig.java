@@ -1,13 +1,12 @@
 package com.test.config;
 
+import com.test.filter.ClientFilter;
 import com.test.filter.JwtAuthenticationTokenFilter;
-import com.test.handler.FailHandler;
-import com.test.handler.MyAccessDenied;
-import com.test.handler.SuccessHandler;
+import com.test.handler.MyAccessDeniedHandler;
+import com.test.handler.MyAuthenticationEntryPoint;
 import com.test.service.impl.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -17,10 +16,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.web.filter.CorsFilter;
 
-@Configuration
+//@Configuration
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true) // 会拦截注解了@PreAuthrize注解的配置
+@EnableGlobalMethodSecurity(prePostEnabled = true) // 会拦截注解了@PreAuthrize注解的配置
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /*@Autowired
@@ -31,6 +32,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private  BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+    @Autowired
+    private MyAuthenticationEntryPoint myAuthenticationEntryPoint;
+    @Autowired
+    private MyAccessDeniedHandler myAccessDeniedHandler;
+    @Autowired
+    private ClientFilter clientFilter;
 
     /**
      * 授权-安全规则
@@ -86,9 +93,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
 
+        //客户端过滤器
+        http.addFilterBefore(clientFilter,UsernamePasswordAuthenticationFilter.class);
+
         //认证过滤器
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
+        //授权异常处理和认证异常处理
+        http.exceptionHandling()
+                .authenticationEntryPoint(myAuthenticationEntryPoint)
+                .accessDeniedHandler(myAccessDeniedHandler);
     }
 
     /**
@@ -133,6 +147,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
     }
 
+    /**
+     * 身份验证管理器
+     * @return
+     * @throws Exception
+     */
     @Bean
     @Override
     protected AuthenticationManager authenticationManager() throws Exception {

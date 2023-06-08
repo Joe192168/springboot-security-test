@@ -43,8 +43,7 @@
         public Collection<? extends GrantedAuthority> getAuthorities() {
             List<GrantedAuthority>  authorities = new ArrayList<>();
             for (String perm : permissions) {
-                // 角色必须以`ROLE_`开头，数据库中没有，则在这里加
-                authorities.add(new SimpleGrantedAuthority("ROLE_"+perm));
+                authorities.add(new SimpleGrantedAuthority(perm));
             }
             return authorities;
         }

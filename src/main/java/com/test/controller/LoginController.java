@@ -20,6 +20,11 @@ public class LoginController {
         return msgResult;
     }
 
+    @PostMapping("/logout")
+    public MsgResult logout(){
+        return loginService.logout();
+    }
+
     /*@GetMapping("/tologin")
     public String login(){
         return "login";

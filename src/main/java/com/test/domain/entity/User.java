@@ -1,15 +1,20 @@
 package com.test.domain.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 /**
- * @Author : xqh
- * @Date :2023/5/31
- * @Description: TODO
+ * 用户表实体
  */
 @Data
-public class User {
+@AllArgsConstructor
+@NoArgsConstructor
+public class User implements Serializable {
 
+    private static final long serialVersionUID = 6611366543246062194L;
     private Integer id;
     private String username;
     private String password;

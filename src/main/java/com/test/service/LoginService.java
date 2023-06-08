@@ -7,4 +7,6 @@ public interface LoginService {
 
     MsgResult login(User user);
 
+    MsgResult logout();
+
 }

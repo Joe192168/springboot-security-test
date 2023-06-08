@@ -1,6 +1,5 @@
 package com.test.filter;
 
-import com.alibaba.fastjson.parser.ParserConfig;
 import com.test.domain.dto.LoginUser;
 import com.test.utils.JwtUtil;
 import com.test.utils.RedisCache;
@@ -12,8 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import sun.plugin.liveconnect.SecurityContextHelper;
-import sun.rmi.runtime.Log;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
