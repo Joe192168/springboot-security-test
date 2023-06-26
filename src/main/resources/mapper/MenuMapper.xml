@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.test.mapper.MenuMapper">
+
+    <resultMap type="com.test.domain.entity.TMenu" id="UserMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="url" column="url" jdbcType="VARCHAR"/>
+        <result property="parentId" column="parent_id" jdbcType="VARCHAR"/>
+        <result property="parentIds" column="parent_ids" jdbcType="VARCHAR"/>
+        <result property="permission" column="permission" jdbcType="VARCHAR"/>
+        <result property="menuIcon" column="menu_icon" jdbcType="VARCHAR"/>
+        <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+        <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+        <result property="createDate" column="create_time" jdbcType="DATE"/>
+        <result property="updateDate" column="update_time" jdbcType="DATE"/>
+        <collection  property="roles"   javaType="java.util.List"     resultMap="RoleResult" />
+    </resultMap>
+
+    <resultMap id="RoleResult" type="com.test.domain.entity.TRole">
+        <id     property="id"       column="id"        />
+        <result property="roleName"     column="role_name"      />
+        <result property="roleRemark"      column="role_remark"       />
+        <result property="userIdCreate"     column="user_id_create"      />
+        <result property="createTime"     column="create_time"    />
+        <result property="updateTime"       column="update_time"    />
+    </resultMap>
+
+    <select id="selectMenuPermsByUserId" resultType="String">
+        select distinct tm.url
+        from t_menu tm
+        left join t_role_menu trm
+        on trm.menu_id = tm.id
+        left join t_role tr
+        on tr.id = trm.role_id
+        left join t_user_role tur
+        on tur.role_id = tr.id
+        where tm.del_flag = 0 and tur.user_id = #{userId}
+    </select>
+
+</mapper>

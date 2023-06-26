@@ -1,7 +1,8 @@
 package com.test.filter;
 
+import com.test.constant.Constants;
 import com.test.domain.dto.LoginUser;
-import com.test.utils.JwtUtil;
+import com.test.service.TokenService;
 import com.test.utils.RedisCache;
 import io.jsonwebtoken.Claims;
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +30,9 @@ import java.util.Objects;
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Autowired
+    private TokenService tokenService;
+
+    @Autowired
     private RedisCache redisCache;
 
     @Override
@@ -45,14 +49,13 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         //解析token
         String userId;
         try {
-            Claims claims = JwtUtil.parseJWT(token);
-            userId = claims.getSubject();
+            userId = tokenService.getUsernameFromToken(token);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("token无效");
         }
         //从redis拿到用户信息，给SecurityContextHolder设置上下文
-        LoginUser loginUser = (LoginUser) redisCache.getCacheObject("login:" + userId);
+        LoginUser loginUser = (LoginUser) redisCache.getCacheObject(Constants.LOGIN_USER_KEY+userId);
         if (Objects.isNull(loginUser)){
             throw new RuntimeException("用户未登录");
         }

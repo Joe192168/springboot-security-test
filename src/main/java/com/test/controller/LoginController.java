@@ -1,10 +1,9 @@
 package com.test.controller;
 
-import com.test.domain.entity.User;
+import com.test.domain.entity.TUser;
 import com.test.domain.pojo.MsgResult;
 import com.test.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,8 +14,8 @@ public class LoginController {
     private LoginService loginService;
 
     @PostMapping("/login")
-    public MsgResult login(@RequestBody User user){
-        MsgResult msgResult = loginService.login(user);
+    public MsgResult login(@RequestBody TUser TUser){
+        MsgResult msgResult = loginService.login(TUser);
         return msgResult;
     }
 

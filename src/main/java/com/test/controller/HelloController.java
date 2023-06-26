@@ -1,6 +1,6 @@
 package com.test.controller;
 
-import com.test.domain.entity.User;
+import com.test.domain.entity.TUser;
 import com.test.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,9 +14,9 @@ public class HelloController {
     @Autowired
     private UserMapper userMapper;
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    //@PreAuthorize("hasRole('admin')")
     @GetMapping("/hello/{userName}")
-    public User hello(@PathVariable String userName){
+    public TUser hello(@PathVariable String userName){
         return userMapper.getUserByUsername(userName);
     }
 }

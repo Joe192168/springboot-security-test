@@ -11,16 +11,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
-import org.springframework.web.filter.CorsFilter;
 
 //@Configuration
-@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true) // 会拦截注解了@PreAuthrize注解的配置
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -40,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private ClientFilter clientFilter;
 
     /**
-     * 授权-安全规则
+     * 认证-安全规则
      * @param http
      * @throws Exception
      */
@@ -81,28 +78,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //自定义403权限不足的返回值
         //http.exceptionHandling().accessDeniedHandler(new MyAccessDenied());
 
-        http
+        ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry = http
                 //关闭csrf
                 .csrf().disable()
+                //认证失败处理类
+                .exceptionHandling().authenticationEntryPoint(myAuthenticationEntryPoint)
+                //授权失败处理类
+                .accessDeniedHandler(myAccessDeniedHandler)
+                .and()
                 //不通过Session获取SecurityContext
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                // 对于登录接口 允许匿名访问
-                .antMatchers("/user/login").anonymous() //表示匿名可访问
+                // 对于登录login 允许匿名访问
+                .antMatchers("/user/login").anonymous()
+                .and()
                 // 除上面外的所有请求全部需要鉴权认证
-                .anyRequest().authenticated();
+                .headers().frameOptions().disable().and().authorizeRequests();
+
+        // 校验权限
+        registry.anyRequest().access("@ss.hasPermiUrl(request)");
 
         //客户端过滤器
         http.addFilterBefore(clientFilter,UsernamePasswordAuthenticationFilter.class);
 
         //认证过滤器
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
-
-        //授权异常处理和认证异常处理
-        http.exceptionHandling()
-                .authenticationEntryPoint(myAuthenticationEntryPoint)
-                .accessDeniedHandler(myAccessDeniedHandler);
     }
 
     /**
@@ -115,7 +116,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }*/
 
     /**
-     * 认证
+     * 授权
      * @param auth
      * @throws Exception
      */

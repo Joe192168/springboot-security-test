@@ -1,7 +1,7 @@
 package com.test.mapper;
 
-import com.test.domain.entity.Authority;
-import com.test.domain.entity.User;
+import com.test.domain.entity.TRole;
+import com.test.domain.entity.TUser;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -9,8 +9,8 @@ import java.util.List;
 @Mapper
 public interface UserMapper {
 
-    User getUserByUsername(String username);
+    TUser getUserByUsername(String username);
 
-    List<Authority> getRolesByUsername(String username);
+    List<TRole> getRolesByUsername(String username);
 
 }
