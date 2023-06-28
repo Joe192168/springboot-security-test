@@ -9,7 +9,6 @@
     import org.springframework.security.core.authority.SimpleGrantedAuthority;
     import org.springframework.security.core.userdetails.UserDetails;
 
-    import java.util.ArrayList;
     import java.util.Collection;
     import java.util.List;
     import java.util.Set;
@@ -100,7 +99,6 @@
          * 账号是否失效，true:账号有效，false账号失效。
          * @return
          */
-        @JsonIgnore
         @Override
         public boolean isAccountNonExpired() {
             return true;
@@ -110,7 +108,6 @@
          * 账号是否被锁，true:账号没被锁，可用；false：账号被锁，不可用
          * @return
          */
-        @JsonIgnore
         @Override
         public boolean isAccountNonLocked() {
             return true;
@@ -120,7 +117,6 @@
          * 账号认证是否过期，true:没过期，可用；false：过期，不可用
          * @return
          */
-        @JsonIgnore
         @Override
         public boolean isCredentialsNonExpired() {
             return true;
@@ -130,7 +126,6 @@
          * 账号是否可用，true:可用，false:不可用
          * @return
          */
-        @JsonIgnore
         @Override
         public boolean isEnabled() {
             return true;

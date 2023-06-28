@@ -80,16 +80,6 @@ public class PermissionService {
     }
 
     /**
-     * 验证用户是否不具备某权限，与 hasPermi逻辑相反
-     *
-     * @param permission 权限字符串
-     * @return 用户是否不具备某权限
-     */
-    public boolean lacksPermi(String permission) {
-        return hasPermi(permission) != true;
-    }
-
-    /**
      * 验证用户是否具有以下任意一个权限
      *
      * @param permissions 以 PERMISSION_NAMES_DELIMETER 为分隔符的权限列表
@@ -136,16 +126,6 @@ public class PermissionService {
             }
         }
         return false;
-    }
-
-    /**
-     * 验证用户是否不具备某角色，与 isRole逻辑相反。
-     *
-     * @param role 角色名称
-     * @return 用户是否不具备某角色
-     */
-    public boolean lacksRole(String role) {
-        return hasRole(role) != true;
     }
 
     /**

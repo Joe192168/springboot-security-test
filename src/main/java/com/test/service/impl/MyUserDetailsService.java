@@ -30,6 +30,7 @@ public class MyUserDetailsService implements UserDetailsService {
         //根据用户名查询角色权限
         //List<TRole> authorityList = userMapper.getRolesByUsername(username);
         //List<String> collect = authorityList.stream().map(authority -> authority.getRoleName()).collect(Collectors.toList());
+        //查询当前用户所有菜单资源
         Set<String> menuPermission = permissionService.getMenuPermission(user);
         return new LoginUser(user,menuPermission);
     }
